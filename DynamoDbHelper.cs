@@ -27,12 +27,12 @@ namespace DynamoDbWriter
             CreateTableRequest createRequest = new CreateTableRequest
             {
                 TableName = tableName,
-                //BillingMode = BillingMode.PAY_PER_REQUEST
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                    ReadCapacityUnits = 20000,
-                    WriteCapacityUnits = 20000
-                }
+                BillingMode = BillingMode.PAY_PER_REQUEST
+                //ProvisionedThroughput = new ProvisionedThroughput
+                //{
+                //    ReadCapacityUnits = 20000,
+                //    WriteCapacityUnits = 20000
+                //}
             };
 
             schemaElements.Add(new KeySchemaElement
@@ -98,7 +98,7 @@ namespace DynamoDbWriter
                     };
                 }
 
-                return await context.QueryAsync<T>(keyValue, config).GetRemainingAsync();
+                return await context.QueryAsync<T>(keyValue, config).GetRemainingAsync().ConfigureAwait(false);
             }
         }
 
@@ -106,7 +106,7 @@ namespace DynamoDbWriter
         {
             using (var context = new DbContextFactory().CreateDbContext())
             {
-                return await context.ScanAsync<T>(scanConditions).GetRemainingAsync();
+                return await context.ScanAsync<T>(scanConditions).GetRemainingAsync().ConfigureAwait(false);
             }
         }
 
@@ -114,7 +114,7 @@ namespace DynamoDbWriter
         {
             using (var context = new DbContextFactory().CreateDbContext())
             {
-                return await context.LoadAsync<T>(keyValue);
+                return await context.LoadAsync<T>(keyValue).ConfigureAwait(false);
             }
         }
 
@@ -122,7 +122,7 @@ namespace DynamoDbWriter
         {
             using (var context = new DbContextFactory().CreateDbContext())
             {
-                await context.SaveAsync(document);
+                await context.SaveAsync(document).ConfigureAwait(false);
             }
         }
 
@@ -130,7 +130,7 @@ namespace DynamoDbWriter
         {
             using (var context = new DbContextFactory().CreateDbContext())
             {
-                await context.DeleteAsync(document);
+                await context.DeleteAsync(document).ConfigureAwait(false);
             }
         }
 
@@ -140,7 +140,7 @@ namespace DynamoDbWriter
             {
                 var batch = context.CreateBatchWrite<T>();
                 batch.AddPutItems(documents);
-                await batch.ExecuteAsync();
+                await batch.ExecuteAsync().ConfigureAwait(false);
             }
         }
 
@@ -150,7 +150,7 @@ namespace DynamoDbWriter
             {
                 var batch = context.CreateBatchWrite<T>();
                 batch.AddDeleteItems(documents);
-                await batch.ExecuteAsync();
+                await batch.ExecuteAsync().ConfigureAwait(false);
             }
         }
     }

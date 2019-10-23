@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Amazon;
 
 namespace DynamoDbWriter
 {
@@ -17,7 +18,7 @@ namespace DynamoDbWriter
             var dynamoDbConnectionSettings = new DynamoDbConnectionSettings
             {
                 AccessKeyId = "-",
-                DisableLogging = true,
+                DisableLogging = false,
                 MaxErrorRetry = 10,
                 SecretKey = "-",
                 Timeout = 5000,
@@ -100,33 +101,37 @@ namespace DynamoDbWriter
             Console.WriteLine("Scenario 03");
             Console.WriteLine("Writing 10k in 100 Parallel Batches (100 each)");
 
-            var lstPG3 = new List<PG1>();
+            var lsts = new List<List<PG1>>();
 
-            for (int i = 0; i < 100; i++)
+            for (int j = 0; j < 100; j++)
             {
-                var binaryData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
-
-                lstPG3.Add(new PG1
+                var lstPG3 = new List<PG1>();
+                for (int i = 0; i < 100; i++)
                 {
-                    PG_ID = Guid.NewGuid().ToString(),
-                    Payload = json,
-                    PP_TS = binaryData
-                });
+                    var binaryData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
+
+                    lstPG3.Add(new PG1
+                    {
+                        PG_ID = Guid.NewGuid().ToString(),
+                        Payload = json,
+                        PP_TS = binaryData
+                    });
+                }
+
+                lsts.Add(lstPG3);
             }
 
             var lstTsk = new List<Task>();
 
             var sw3 = new Stopwatch();
+            sw3.Start();
 
-            for (int i = 0; i < 100; i++)
+            foreach (var lst100 in lsts)
             {
-                sw3.Start();
-                Task t = Task.Run(() => dbHelper.BatchSave(lstPG3));
-
-                lstTsk.Add(t);
+                lstTsk.Add(dbHelper.BatchSave(lst100));
             }
 
-            await Task.WhenAll(lstTsk);
+            await Task.WhenAll(lstTsk).ConfigureAwait(false);
 
             Console.WriteLine(sw3.Elapsed);
 
