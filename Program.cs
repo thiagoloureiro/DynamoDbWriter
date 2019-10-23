@@ -70,9 +70,9 @@ namespace DynamoDbWriter
 
                 lstPG.Add(new PG1
                 {
-                    ProcessGroupId = Guid.NewGuid().ToString(),
+                    PG_ID = Guid.NewGuid().ToString(),
                     Payload = json,
-                    physicalpp_timerange = binaryData
+                    PP_TS = binaryData
                 });
             }
 
@@ -108,9 +108,9 @@ namespace DynamoDbWriter
 
                 lstPG3.Add(new PG1
                 {
-                    ProcessGroupId = Guid.NewGuid().ToString(),
+                    PG_ID = Guid.NewGuid().ToString(),
                     Payload = json,
-                    physicalpp_timerange = binaryData
+                    PP_TS = binaryData
                 });
             }
 
@@ -138,9 +138,9 @@ namespace DynamoDbWriter
             var sevenItems = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
             await dbHelper.Save(new PG1
             {
-                ProcessGroupId = Guid.NewGuid().ToString(),
-                //Payload = json,
-                physicalpp_timerange = sevenItems
+                PG_ID = Guid.NewGuid().ToString(),
+                Payload = json,
+                PP_TS = sevenItems
             });
         }
 

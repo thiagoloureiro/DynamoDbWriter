@@ -7,10 +7,10 @@ namespace DynamoDbWriter
     public class PG1
     {
         [DynamoDBHashKey]
-        public string ProcessGroupId { get; set; }
+        public string PG_ID { get; set; }
 
         [DynamoDBRangeKey]
-        public byte[] physicalpp_timerange { get; set; }
+        public byte[] PP_TS { get; set; }
 
         [DynamoDBProperty("Payload")]
         public string Payload { get; set; }
