@@ -146,7 +146,7 @@ namespace DynamoDbWriter
 
         private static async Task CreateTable(IDynamoDbHelper dbHelper, int i)
         {
-            await dbHelper.CreateTable($"PG{i}", "ProcessGroupId", ScalarAttributeType.S, "physicalpp_timerange",
+            await dbHelper.CreateTable($"PG{i}", "PG_ID", ScalarAttributeType.S, "PP_TS",
                 ScalarAttributeType.B);
         }
     }
